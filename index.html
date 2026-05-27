@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vadde | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --glow: #00f2ff;
+            --accent: #7000ff;
+            --text: #ffffff;
+        }
+
+        /* ANIMATION: Background Color Cycle */
+        @keyframes colorShift {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #050505 100%);
+            /* Applying the color shift to the whole page subtly */
+            animation: colorShift 20s linear infinite;
+        }
+
+        /* DESIGN: New Magnetic Cursor */
+        .cursor-dot {
+            position: fixed; width: 8px; height: 8px; background: white;
+            border-radius: 50%; pointer-events: none; z-index: 10000;
+            box-shadow: 0 0 15px var(--glow);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+        }
+        .cursor-ring {
+            position: fixed; width: 40px; height: 40px; border: 1px solid var(--glow);
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            transition: transform 0.1s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+            transform: translate(-50%, -50%);
+        }
+
+        .trail {
+            position: fixed; width: 15px; height: 15px; border-radius: 50%;
+            background: var(--accent); pointer-events: none; z-index: 9998;
+            opacity: 0; transition: transform 0.1s ease-out;
+            mix-blend-mode: screen;
+        }
+
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; perspective: 1000px;
+        }
+
+        .name-wrapper {
+            position: relative; transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            cursor: none; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .magical-name {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2.5rem, 10vw, 10rem);
+            font-weight: 700; text-align: center; letter-spacing: -2px;
+            text-transform: uppercase;
+            background: linear-gradient(to bottom, #fff 30%, #444 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); line-height: 1;
+        }
+
+        .sub-name {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(0.8rem, 2vw, 1.5rem);
+            letter-spacing: 12px; color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px; text-transform: uppercase;
+            transition: 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .portal-card {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8) translateZ(50px);
+            width: 90vw; max-width: 1000px;
+            background: var(--glass); backdrop-filter: blur(35px);
+            border: 1px solid var(--border); border-radius: 30px;
+            padding: 3rem; opacity: 0; pointer-events: none;
+            transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; z-index: 10;
+        }
+
+        .name-wrapper:hover .magical-name, .name-wrapper:hover .sub-name { filter: blur(25px); opacity: 0.05; transform: scale(1.1); }
+        .name-wrapper:hover .portal-card { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1) translateZ(100px); }
+
+        .portal-card h3 { font-family: 'Syncopate'; font-size: 0.7rem; color: var(--glow); margin-bottom: 0.8rem; letter-spacing: 3px; }
+        .portal-card p { font-weight: 300; line-height: 1.6; color: #ccc; font-size: 0.85rem; }
+        .edu-tag { margin-bottom: 1.2rem; }
+        .edu-tag b { color: #fff; display: block; margin-bottom: 3px; font-size: 0.9rem; }
+
+        .section-wrap { padding: 10vh 10%; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 4rem; }
+
+        /* HIGHLIGHT EFFECT: Heading Glow and Glitch */
+        .section-header h2 { 
+            font-family: 'Syncopate'; 
+            font-size: clamp(1.2rem, 3vw, 2rem); 
+            letter-spacing: 8px; 
+            text-transform: uppercase; 
+            position: relative; 
+            display: inline-block;
+            transition: 0.5s;
+        }
+        .section-header h2:hover {
+            color: var(--glow);
+            text-shadow: 0 0 20px var(--glow), 0 0 40px var(--accent);
+            letter-spacing: 12px;
+        }
+        .section-header h2::after { 
+            content: ''; position: absolute; bottom: -10px; left: 0; 
+            width: 100%; height: 2px; background: var(--glow); 
+            box-shadow: 0 0 15px var(--glow); 
+            transform: scaleX(0.3);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .section-header h2:hover::after {
+            transform: scaleX(1);
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .about-text { line-height: 1.8; color: #ccc; font-size: 1.1rem; }
+        .about-text ul { list-style: none; margin-top: 1.5rem; }
+        .about-text li { margin-bottom: 10px; padding-left: 20px; position: relative; }
+        .about-text li::before { content: '▹'; position: absolute; left: 0; color: var(--glow); }
+
+        .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+        .skill-node { margin-bottom: 2rem; opacity: 0; transform: translateY(20px); transition: 0.8s; }
+        .skill-node.revealed { opacity: 1; transform: translateY(0); }
+        .skill-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-family: 'Syncopate'; font-size: 0.65rem; letter-spacing: 1px; }
+        .bar-bg { height: 2px; background: rgba(255,255,255,0.05); width: 100%; position: relative; }
+        .bar-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--glow)); box-shadow: 0 0 15px var(--glow); transition: width 2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .bento-item { background: var(--glass); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; position: relative; overflow: hidden; transition: 0.5s; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transform: translateY(30px); }
+        .bento-item.revealed { opacity: 1; transform: translateY(0); }
+        .bento-item h2 { font-family: 'Syncopate'; font-size: 1rem; text-align: center; letter-spacing: 3px; z-index: 2; }
+        .project-desc { position: absolute; inset: 0; background: rgba(10, 10, 10, 0.98); padding: 2rem; display: flex; flex-direction: column; justify-content: flex-start; opacity: 0; transform: translateY(20px); transition: 0.5s; z-index: 3; pointer-events: none; overflow-y: auto; }
+        .project-desc p { font-size: 0.8rem; line-height: 1.5; color: #ddd; }
+        .project-desc h4 { color: var(--glow); font-size: 0.7rem; font-family: 'Syncopate'; margin-bottom: 10px; }
+        .bento-item:hover .project-desc { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .full-width { grid-column: span 2; }
+
+        .contact-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; margin-top: 4rem; }
+        .contact-form { display: flex; flex-direction: column; gap: 15px; }
+        .contact-form input, .contact-form textarea { background: var(--glass); border: 1px solid var(--border); padding: 15px; color: white; border-radius: 10px; font-family: 'Outfit'; outline: none; transition: 0.3s; }
+        .contact-form input:focus, .contact-form textarea:focus { border-color: var(--glow); box-shadow: 0 0 10px rgba(0,242,255,0.1); }
+        .submit-btn { background: var(--glow); color: black; border: none; padding: 15px; border-radius: 10px; font-family: 'Syncopate'; font-weight: 700; cursor: none; transition: 0.4s; }
+        .submit-btn:hover { box-shadow: 0 0 30px var(--glow); transform: translateY(-2px); background: white; }
+
+        @media (max-width: 900px) {
+            .portal-card, .skills-grid, .contact-container, .bento-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cursor Elements -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <section class="hero">
+        <div class="name-wrapper" id="scene">
+            <h1 class="magical-name">VADDE</h1>
+            <h2 class="sub-name">MANOJ KUMAR</h2>
+            <div class="portal-card">
+                <div>
+                    <h3>EDUCATION PATH</h3>
+                    <div class="edu-tag">
+                        <b>B.Tech (2023-2027)</b>
+                        Anantha lakshmi institute of technology and sciences<br>
+                        <small>Near sk university, itukulapalli, Ananthapur, AP</small>
+                    </div>
+                    <div class="edu-tag">
+                        <b>Intermediate (2021-2023)</b>
+                        Narayana junior college<br>
+                        <small>kn campus, near busstand, Ananthapur</small>
+                    </div>
+                    <div class="edu-tag">
+                        <b>Secondary School (2021)</b>
+                        Prasad concept school <br>
+                        <small>Ananthapur, Andhra Pradesh</small>
+                    </div>
+                </div>
+                <div>
+                    <h3>CONTACT DETAILS</h3>
+                    <p><b>Email:</b> vaddemanoj55@gmail.com</p>
+                    <p><b>Voice:</b> +91 9515219466</p>
+                    <p><b>Loc:</b> 6th road Ananthapur, AP</p>
+                    <br>
+                    <h3>CONNECT WITH ME </h3>
+                    <p>about.me/vaddemanojkumar</p>
+                    <p>linkedin.com/in/vaddemanojkumar</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-wrap">
+        <div class="section-header"><h2>About Me</h2></div>
+        <div class="about-text">
+            <p>I’m a final-year B.Tech student interested in technology, creativity, and building practical projects. From the way I approach learning and work on projects, I focus on improving my skills step by step rather than just learning theory.</p>
+            <ul>
+                <li>Interested in AI, ML, Full-Stack Development, and Prompt Engineering</li>
+                <li>Enjoy designing, video creation, and content writing</li>
+                <li>Building projects for my resume and career growth</li>
+                <li>Prefer concepts explained in a simple, direct, and practical way</li>
+                <li>Continuously improving communication and social confidence</li>
+                <li>Curious and quick to learn new tools and technologies</li>
+            </ul>
+            <p style="margin-top: 1.5rem; color: var(--glow);">I’m also career-focused early on, which gives me an advantage in building skills and experience.</p>
+        </div>
+    </section>
+
+    <section class="section-wrap">
+        <div class="skills-grid">
+            <div>
+                <div class="section-header" style="text-align: left;"><h2>Technical Skills</h2></div>
+                <div class="skill-node">
+                    <div class="skill-label"><span>Coding</span><span class="skill-pct" data-target="75">0%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-percent="75%"></div></div>
+                </div>
+                <div class="skill-node">
+                    <div class="skill-label"><span>Web Designing</span><span class="skill-pct" data-target="80">0%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-percent="80%"></div></div>
+                </div>
+            </div>
+            <div>
+                <div class="section-header" style="text-align: left;"><h2>Soft Skills</h2></div>
+                <div class="skill-node">
+                    <div class="skill-label"><span>Communication</span><span class="skill-pct" data-target="80">0%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-percent="80%"></div></div>
+                </div>
+                <div class="skill-node">
+                    <div class="skill-label"><span>Leadership</span><span class="skill-pct" data-target="75">0%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-percent="75%"></div></div>
+                </div>
+                <div class="skill-node">
+                    <div class="skill-label"><span>Content Creation</span><span class="skill-pct" data-target="70">0%</span></div>
+                    <div class="bar-bg"><div class="bar-fill" data-percent="70%"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-wrap">
+        <div class="section-header"><h2>Academic Projects</h2></div>
+        <div class="bento-grid">
+            <div class="bento-item full-width">
+                <h2>Footstep Power Generation</h2>
+                <div class="project-desc">
+                    <h4>Renewable Energy Technology</h4>
+                    <p>Footstep Power Generation is a renewable energy technology that converts the mechanical energy produced by human footsteps into electrical energy using piezoelectric sensors. When people walk on the platform, pressure applied on the sensors generates electricity, which is converted, regulated, and stored in batteries for applications like LED lighting, charging systems, and smart devices. This eco-friendly system is highly useful in crowded places such as railway stations, malls, airports, and public walkways where continuous movement can generate significant energy. The system includes components like piezoelectric sensors, rectifiers, voltage regulators, and batteries. It helps reduce dependency on conventional energy sources, supports sustainable development, and promotes green energy solutions. Although the power generated from a single footstep is small, advancements in technology are improving the efficiency and future applications of this system in smart cities and public infrastructure.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section-header" style="margin-top: 6rem;"><h2>Technical Projects</h2></div>
+        <div class="bento-grid">
+            <div class="bento-item">
+                <h2>GAN AI</h2>
+                <div class="project-desc">
+                    <h4>AI & Deep Learning</h4>
+                    <p>Generative Adversarial Network (GAN) is an advanced AI and Deep Learning model used to generate realistic data such as images, videos, audio, and text. It consists of two neural networks called the Generator and the Discriminator. The Generator creates fake data, while the Discriminator checks whether the data is real or fake. Through continuous competition and learning, the Generator improves its output to create highly realistic results. GANs are widely used in image generation, medical imaging, animation, gaming, voice synthesis, and deepfake technology. They help automate data creation and improve image quality, but they also require high computational power and can sometimes be misused. Overall, GANs are an important and powerful technology in modern Artificial Intelligence applications.</p>
+                </div>
+            </div>
+            <div class="bento-item">
+                <h2>E-UDBHAV 2K26</h2>
+                <div class="project-desc">
+                    <h4>College Technical Fest Website</h4>
+                    <p>Designed and developed a responsive and visually appealing website for our college technical fest using HTML, CSS, JavaScript, and Bootstrap. The website was created to provide a centralized platform for showcasing event details, technical competitions, workshop information, schedules, coordinators, and registration details in an organized and user-friendly manner. Implemented interactive front-end features such as dynamic navigation menus, event cards, image sections, smooth scrolling effects, and structured layouts to enhance user engagement and browsing experience. Focused on building a clean and modern UI/UX design with proper alignment, typography, and color consistency to ensure professional presentation. Ensured full mobile responsiveness and cross-browser compatibility so the website performs efficiently across desktops, tablets, and smartphones. Optimized the website for accessibility, performance, and smooth user interaction while applying modern web development practices and responsive design principles. This project helped strengthen practical knowledge in front-end development, UI/UX design, responsive web technologies, debugging, and collaborative project development.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-wrap" style="padding-bottom: 20vh;">
+        <div class="section-header"><h2>LETS WORK TOGETHER</h2></div>
+        <div class="contact-container">
+            <div>
+                <h3> VADDE MANOJ KUMAR</h3>
+                <p style="margin: 1rem 0; opacity: 0.6;">Ananthapur, Andhra Pradesh, India</p>
+                <p><b>Email:</b> vaddemanoj55@gmail.com</p>
+                <p><b>Voice:</b> +91 9515219466</p>
+            </div>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea rows="5" placeholder="Project Details / Message" required></textarea>
+                <button type="submit" class="submit-btn">SEND TRANSMISSION</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        const dot = document.querySelector('.cursor-dot');
+        const ring = document.querySelector('.cursor-ring');
+        const scene = document.getElementById('scene');
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX, y = e.clientY;
+            
+            // Cursor Logic
+            dot.style.left = x + 'px'; 
+            dot.style.top = y + 'px';
+            
+            // Ring follows with a tiny delay (via CSS transition)
+            ring.style.left = x + 'px';
+            ring.style.top = y + 'px';
+
+            const trail = document.createElement('div');
+            trail.className = 'trail'; 
+            trail.style.left = x + 'px'; 
+            trail.style.top = y + 'px';
+            document.body.appendChild(trail);
+            
+            setTimeout(() => { 
+                trail.style.transform = 'scale(0.1)'; 
+                trail.style.opacity = '0'; 
+                setTimeout(() => trail.remove(), 200); 
+            }, 50);
+
+            const moveX = (window.innerWidth / 2 - x) / 25, moveY = (window.innerHeight / 2 - y) / 25;
+            scene.style.transform = `rotateX(${moveY}deg) rotateY(${-moveX}deg)`;
+        });
+
+        // Magnetic Hover Effect for Links/Buttons
+        const interactiveElements = document.querySelectorAll('button, input, textarea, .bento-item, h2');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                ring.style.width = '70px';
+                ring.style.height = '70px';
+                ring.style.borderColor = 'var(--accent)';
+                dot.style.background = 'var(--glow)';
+            });
+            el.addEventListener('mouseleave', () => {
+                ring.style.width = '40px';
+                ring.style.height = '40px';
+                ring.style.borderColor = 'var(--glow)';
+                dot.style.background = 'white';
+            });
+        });
+
+        const revealElements = (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    if (entry.target.classList.contains('skill-node')) {
+                        const bar = entry.target.querySelector('.bar-fill');
+                        const pct = entry.target.querySelector('.skill-pct');
+                        const target = parseInt(pct.getAttribute('data-target'));
+                        bar.style.width = target + '%';
+                        let current = 0;
+                        const counter = setInterval(() => {
+                            if (current >= target) clearInterval(counter);
+                            else { current++; pct.innerText = current + '%'; }
+                        }, 20);
+                    }
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(revealElements, { threshold: 0.1 });
+        document.querySelectorAll('.skill-node, .bento-item').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
